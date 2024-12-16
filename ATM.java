@@ -16,7 +16,7 @@ public class ATM extends Application {
      To anyone now or in the future who may be reading this code. Unfortunately this was the best I could come up with
      due to the accelerated nature of this course as well as trying to finish another 8-week course that had its technical challenges as well.
      Unfortunately you can only learn so much before information overload gets the best of you, and some concepts are better learned at your own pace.
-     Hopefully I can return to this project in the futureand that future me will have a better understanding of the programming concepts.
+     Hopefully I can return to this project in the future and have a better understanding of the programming concepts.
 
      I did what I could.
 
