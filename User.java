@@ -1,31 +1,34 @@
 package com.example.atmprojectgui;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
+import java.util.Scanner;
 
-public class User extends Application {
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    private void User() {
-        String enteredPin = pinField.getText();
-        if (enteredPin.equals(pin)) {
-            isAuthenticated = true;
-            statusLabel.setText("Login successful!");
-            balanceLabel.setText("Balance: $" + balance);
-            pinField.clear();
-            pinField.setPromptText("PIN");
-            statusLabel.setStyle("-fx-text-fill: green;");
+public class User {
+    // Method to deposit money
+    public void depositMoney() {    // Method changed to public temporarily to test out User methods via TestUser
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter amount to deposit: $");
+        double amount = scanner.nextDouble();
+        if (amount > 0) {
+            System.out.println("Deposited $" + amount + ". Your new balance is $" + amount);
         } else {
-            statusLabel.setText("Incorrect PIN! Try again.");
-            statusLabel.setStyle("-fx-text-fill: red;");
+            System.out.println("Invalid deposit amount.");
         }
     }
 
-    @Override
-    public void start(Stage primaryStage) {
+    // Method to withdraw money
+    public void withdrawMoney() {           // Method changed to public temporarily to test out User methods via TestUser
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter amount to withdraw: $");
+        double amount = scanner.nextDouble();
+        double balance = 0;
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            System.out.println("Withdrew $" + amount + ". Your new balance is $" + balance);
+        } else if (amount > balance) {
+            System.out.println("Insufficient balance.");
+        } else {
+            System.out.println("Invalid withdrawal amount.");
+        }
 
     }
 }
