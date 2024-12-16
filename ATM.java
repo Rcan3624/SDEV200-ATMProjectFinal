@@ -1,180 +1,99 @@
-package com.example.atmprojectgui;
-
+package com.example.atmprojectgui;// Java Program to create RadioButton, add it to a ToggleGroup and add a listener to it
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.event.ActionEvent;
+import javafx.event.*;
+import javafx.collections.*;
 import javafx.stage.Stage;
-
+import javafx.scene.text.Text.*;
+import javafx.scene.text.*;
+import javafx.beans.value.*;
 public class ATM extends Application {
 
-    private double balance = 1000.00; // Default balance for the user
-    private String pin = "1234"; // Default PIN for the user
-    private boolean isAuthenticated = true; // To track if the user is authenticated
+    /**
+     To anyone now or in the future who may be reading this code. Unfortunately this was the best I could come up with
+     due to the accelerated nature of this course as well as trying to finish another 8-week course that had its technical challenges as well.
+     Unfortunately you can only learn so much before information overload gets the best of you, and some concepts are better learned at your own pace.
+     Hopefully I can return to this project in the futureand that future me will have a better understanding of the programming concepts.
 
-    private TextField pinField;
-    private Label statusLabel;
-    private Label balanceLabel;
+     I did what I could.
 
-    public static void main(String[] args) {
+     -Ryan Cannon
+
+     **/
+
+    // launch the application
+    public void start(Stage s)
+    {
+        // set title for the stage
+        s.setTitle("ATM Project");
+
+        // create a tile pane
+        TilePane r = new TilePane();
+
+        // create a label
+        Label l = new Label("This is a basic example of the ATM GUI ");
+        Label l2 = new Label("nothing selected");
+
+        // create a toggle group
+        ToggleGroup tg = new ToggleGroup();
+
+        // create radiobuttons
+        RadioButton rbDeposit = new RadioButton("Deposit");
+        RadioButton rbWithdraw = new RadioButton("Withdraw");
+        RadioButton rbchkBalance = new RadioButton("Check Balance");
+        RadioButton rbTransfer = new RadioButton("Transfer");
+
+        // add radiobuttons to toggle group
+        rbDeposit.setToggleGroup(tg);
+        rbWithdraw.setToggleGroup(tg);
+        rbchkBalance.setToggleGroup(tg);
+        rbTransfer.setToggleGroup(tg);
+
+        // Add buttons
+        Button btOK = new Button("OK");
+
+
+        // add label
+        r.getChildren().add(l);
+        r.getChildren().add(rbDeposit);
+        r.getChildren().add(rbWithdraw);
+        r.getChildren().add(rbchkBalance);
+        r.getChildren().add(rbTransfer);
+        r.getChildren().add(l2);
+
+        // create a scene
+        Scene sc = new Scene(r, 200, 200);
+
+        // add a change listener
+        tg.selectedToggleProperty().addListener(new ChangeListener<Toggle>()
+        {
+            public void changed(ObservableValue<? extends Toggle> ob,
+                                Toggle o, Toggle n)
+            {
+
+                RadioButton rb = (RadioButton)tg.getSelectedToggle();
+
+                if (rb != null) {
+                    String s = rb.getText();
+
+                    // change the label
+                    l2.setText(s + " selected");
+                }
+            }
+        });
+
+        // set the scene
+        s.setScene(sc);
+
+        s.show();
+    }
+
+    public static void main(String args[])
+    {
+        // launch the application
         launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("ATM Application");
-
-        // Create the main layout
-        BorderPane root = new BorderPane();
-
-        // Create a scene and set the root layout
-        Scene scene = new Scene(root, 400, 300);
-        primaryStage.setScene(scene);
-
-        // Pin Input Section
-        VBox pinBox = new VBox(10);
-        pinBox.setPadding(new Insets(20));
-
-        Label pinLabel = new Label("Enter your PIN:");
-        pinField = new TextField();
-        pinField.setPromptText("PIN");
-        pinField.setMaxWidth(150);
-        Button loginButton = new Button("Login");
-
-        loginButton.setOnAction(e -> User());
-
-        pinBox.getChildren().addAll(pinLabel, pinField, loginButton);
-
-        // ATM Operations Section (Initially Hidden)
-        VBox operationsBox = new VBox(10);
-        operationsBox.setPadding(new Insets(20));
-        operationsBox.setVisible(false); // Hide until logged in
-
-        Button withdrawButton = new Button("Withdraw");
-        Button depositButton = new Button("Deposit");
-        Button checkBalanceButton = new Button("Check Balance");
-        Button transferButton = new Button("Transfer");
-        Button logoutButton = new Button("Logout");
-
-        statusLabel = new Label();
-        balanceLabel = new Label("Balance: $1000.00");
-
-        withdrawButton.setOnAction(e -> withdrawMoney());
-        depositButton.setOnAction(e -> depositMoney());
-        checkBalanceButton.setOnAction(e -> checkBalance());
-        transferButton.setOnAction(e -> transferMoney());
-        logoutButton.setOnAction(e -> logout());
-
-        operationsBox.getChildren().addAll(
-                balanceLabel,
-                withdrawButton,
-                depositButton,
-                checkBalanceButton,
-                transferButton,
-                statusLabel,
-                logoutButton
-        );
-
-        // Display the login UI first
-        root.setCenter(pinBox);
-
-        // After login, show operations box
-        root.setBottom(operationsBox);
-
-        // Show the UI
-        primaryStage.show();
-    }
-
-    private void User() {
-        String enteredPin = pinField.getText();
-        if (enteredPin.equals(pin)) {
-            isAuthenticated = true;
-            statusLabel.setText("Login successful!");
-            balanceLabel.setText("Balance: $" + balance);
-            pinField.clear();
-            pinField.setPromptText("PIN");
-            statusLabel.setStyle("-fx-text-fill: green;");
-        } else {
-            statusLabel.setText("Incorrect PIN! Try again.");
-            statusLabel.setStyle("-fx-text-fill: red;");
-        }
-    }
-
-    private void withdrawMoney() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Withdraw Money");
-        dialog.setHeaderText("Enter amount to withdraw:");
-
-        dialog.showAndWait().ifPresent(amount -> {
-            try {
-                double withdrawAmount = Double.parseDouble(amount);
-                if (withdrawAmount > 0 && withdrawAmount <= balance) {
-                    balance -= withdrawAmount;
-                    statusLabel.setText("Successfully withdrawn $" + withdrawAmount);
-                    balanceLabel.setText("Balance: $" + balance);
-                } else {
-                    statusLabel.setText("Insufficient balance or invalid amount.");
-                }
-            } catch (NumberFormatException e) {
-                statusLabel.setText("Invalid amount entered.");
-            }
-        });
-    }
-
-    private void depositMoney() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Deposit Money");
-        dialog.setHeaderText("Enter amount to deposit:");
-
-        dialog.showAndWait().ifPresent(amount -> {
-            try {
-                double depositAmount = Double.parseDouble(amount);
-                if (depositAmount > 0) {
-                    balance += depositAmount;
-                    statusLabel.setText("Successfully deposited $" + depositAmount);
-                    balanceLabel.setText("Balance: $" + balance);
-                } else {
-                    statusLabel.setText("Invalid deposit amount.");
-                }
-            } catch (NumberFormatException e) {
-                statusLabel.setText("Invalid amount entered.");
-            }
-        });
-    }
-
-    private void checkBalance() {
-        statusLabel.setText("Current Balance: $" + balance);
-    }
-
-    private void transferMoney() {
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Transfer Money");
-        dialog.setHeaderText("Enter amount to transfer:");
-
-        dialog.showAndWait().ifPresent(amount -> {
-            try {
-                double transferAmount = Double.parseDouble(amount);
-                if (transferAmount > 0 && transferAmount <= balance) {
-                    // Simulate transfer (can be to another account, etc.)
-                    balance -= transferAmount;
-                    statusLabel.setText("Successfully transferred $" + transferAmount);
-                    balanceLabel.setText("Balance: $" + balance);
-                } else {
-                    statusLabel.setText("Insufficient balance or invalid amount.");
-                }
-            } catch (NumberFormatException e) {
-                statusLabel.setText("Invalid amount entered.");
-            }
-        });
-    }
-
-    private void logout() {
-        isAuthenticated = false;
-        balance = 1000.00; // Reset to default balance
-        pinField.clear();
-        pinField.setPromptText("PIN");
-        statusLabel.setText("Logged out.");
-        balanceLabel.setText("Balance: $1000.00");
     }
 }
